@@ -1,0 +1,57 @@
+MSRP
+Gas Mileage
+Engine
+EPA Class
+Style Name
+Drivetrain
+Passenger Capacity
+Passenger Doors
+Body Style
+Transmission
+EPA Classification
+Base Curb Weight (lbs)
+Front Hip Room (in)
+Front Leg Room (in)
+Second Shoulder Room (in)
+Passenger Volume (ft³)
+Second Head Room (in)
+Front Shoulder Room (in)
+Second Hip Room (in)
+Front Head Room (in)
+Second Leg Room (in)
+Wheelbase (in)
+Min Ground Clearance (in)
+Track Width, Front (in)
+Width, Max w/o mirrors (in)
+Track Width, Rear (in)
+Height, Overall (in)
+Cargo Volume to Seat 1 (ft³)
+Cargo Volume to Seat 2 (ft³)
+Cargo Volume to Seat 3 (ft³)
+Fuel Tank Capacity, Approx (gal)
+Fuel Economy Est-Combined (MPG)
+EPA Fuel Economy Est - City (MPG)
+EPA Fuel Economy Est - Hwy (MPG)
+SAE Net Torque @ RPM
+Fuel System
+Engine Type
+SAE Net Horsepower @ RPM
+Displacement
+Air Bag-Frontal-Driver
+Air Bag-Frontal-Passenger
+Air Bag-Passenger Switch (On/Off)
+Air Bag-Side Body-Front
+Air Bag-Side Body-Rear
+Air Bag-Side Head-Front
+Air Bag-Side Head-Rear
+Brakes-ABS
+Child Safety Rear Door Locks
+Daytime Running Lights
+Traction Control
+Night Vision
+Rollover Protection Bars
+Fog Lamps
+Parking Aid
+Tire Pressure Monitor
+Back-Up Camera
+Stability Control
