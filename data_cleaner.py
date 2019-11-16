@@ -13,5 +13,7 @@ if(__name__ == '__main__'):
 	cars = pd.read_csv(fname, index_col=0, header=None, dtype = object).T		#transpose of csv for simpler usage
 	attrs = [line.rstrip('\n') for line in open(attrname)]						#extract relevant attributes
 	cars = cars[attrs]															#remove non-relevant attributes from df
+	cars = cars.dropna(subset = ['MSRP'])										#remove any in specific columns
+	cars['MSRP'] = cars.MSRP.replace('\D', '', regex=True).astype(int)
 
 	cars.to_csv(outname)														#export processed dataset
