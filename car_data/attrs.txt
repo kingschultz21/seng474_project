@@ -1,5 +1,4 @@
 MSRP
-Gas Mileage
 Drivetrain
 Passenger Capacity
 Passenger Doors
