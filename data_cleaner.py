@@ -52,6 +52,7 @@ def proc_fuel(df):
 def proc_measurements(df):
 	attrs = ['Wheelbase (in)','Width, Max w/o mirrors (in)', 'Height, Overall (in)', 'Displacement']
 	for attr in attrs:
+		df[attr] = df[attr].replace('\D.','',regex=True)
 		df[attr] = pd.to_numeric(df[attr], errors='coerce')
 		df = df.dropna(subset=[attr])
 		df[attr] = df[attr].astype(float)
@@ -111,7 +112,7 @@ def process_cars(df):
 	df = proc_drivetrain(df)
 	df = proc_engine(df)
 	df = to_int(df)
-	#df = proc_measurements(df) #TODO: fix!
+	df = proc_measurements(df) #TODO: fix!
 	df = proc_fuel(df)
 	df = proc_hptorq(df)
 	df = proc_misc(df)
