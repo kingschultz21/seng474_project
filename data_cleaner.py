@@ -3,6 +3,7 @@
 #
 import pandas as pd
 import os
+import numpy as np
 pd.options.mode.chained_assignment = None #supress SettingWithCopyWarning (problematic?)
 
 #
@@ -55,7 +56,11 @@ def proc_measurements(df):
 		df[attr] = df[attr].replace('\D.','',regex=True)
 		df[attr] = pd.to_numeric(df[attr], errors='coerce')
 		df = df.dropna(subset=[attr])
-		df[attr] = df[attr].astype(float)
+		if(attr == 'Displacement'):
+			df[attr] = (df[attr]/100.0).astype(float)
+		else:
+			df[attr] = df[attr].astype(float)
+			
 	df.rename(columns = {attrs[0]:'WHEELBASE', attrs[1]:'WIDTH', 
 						 attrs[2]:'HEIGHT', attrs[3]: 'DISPLACEMENT'}, inplace = True) 
 	return df
@@ -142,6 +147,16 @@ def label_encode(df):
 		df[attr] = df[attr].astype('category')
 		df[attr+'_CAT'] = df[attr].cat.codes
 	return df
+#
+# remove infrequent values
+#
+def threshold(df, t):
+	for col in df.columns:
+		value_counts = df[col].value_counts()
+		to_remove = value_counts[value_counts <= t].index.values
+		df[col].loc[df[col].isin(to_remove)] = np.nan
+		df = df.dropna()
+	return df
 
 def info_print(ftype, df):
 	print("number of rows in "+ftype+" file: "+ str(len(df)))
@@ -174,6 +189,7 @@ def main():
 	cars = label_encode(cars)														#label endcoding scheme
 	print("DONE ENCODING: "+outname)
 
+	cars = threshold(cars, 2)
 	cars.to_csv(cwd+outname)														#export processed dataset
 	print("DONE CREATING: "+outname)
 	info_print("output",cars)
