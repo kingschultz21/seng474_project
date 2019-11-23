@@ -33,6 +33,7 @@ def to_int(df):
 	attrs = ['MSRP','Passenger Capacity', 'Passenger Doors']
 	for attr in attrs:
 		df[attr] = df[attr].astype(int)
+	df.MSRP = df.MSRP.clip(upper=150000)
 	df.rename(columns = {attrs[1]:'PASSCAPACITY', attrs[2]:'DOORS'}, inplace = True) 
 	return df
 #
@@ -53,14 +54,10 @@ def proc_fuel(df):
 def proc_measurements(df):
 	attrs = ['Wheelbase (in)','Width, Max w/o mirrors (in)', 'Height, Overall (in)', 'Displacement']
 	for attr in attrs:
-		df[attr] = df[attr].replace('\D.','',regex=True)
+		df[attr] = df[attr].replace('[^\d\.]*','',regex=True)
 		df[attr] = pd.to_numeric(df[attr], errors='coerce')
 		df = df.dropna(subset=[attr])
-		if(attr == 'Displacement'):
-			df[attr] = (df[attr]/100.0).astype(float)
-		else:
-			df[attr] = df[attr].astype(float)
-			
+		df[attr] = df[attr].astype(float)
 	df.rename(columns = {attrs[0]:'WHEELBASE', attrs[1]:'WIDTH', 
 						 attrs[2]:'HEIGHT', attrs[3]: 'DISPLACEMENT'}, inplace = True) 
 	return df
@@ -190,12 +187,14 @@ def main():
 	cars = process_cars(cars)														#process cars!
 	print("DONE PROCESSING: "+fname)
 
+	cars = threshold(cars, 2)														#threshold based on value
+	print("DONE THRESHOLD: "+str(2))
+
 	print("ENCODING: "+outname)
-	#cars = binary_encode(cars)														#binary encoding scheme
-	cars = label_encode(cars)														#label endcoding scheme
+	cars = binary_encode(cars)														#binary encoding scheme
+	#cars = label_encode(cars)														#label endcoding scheme
 	print("DONE ENCODING: "+outname)
 
-	cars = threshold(cars, 2)														#threshold based on value
 	cars.to_csv(cwd+outname)														#export processed dataset
 	print("DONE CREATING: "+outname)
 	info_print("output",cars)
