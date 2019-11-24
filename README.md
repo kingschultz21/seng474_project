@@ -11,6 +11,6 @@ run `python3 data_cleaner.py` from within the `seng474_project` directory
 `nbinteract report.ipynb`
 
 #### 3. Publishing Webpage
-`git add .`
-`git commit -m "publishing nbinteract"`
-`git push`
+`git add .`  
+`git commit -m "publishing nbinteract"`   
+`git push`  
