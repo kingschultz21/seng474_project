@@ -22,11 +22,9 @@ def proc_drivetrain(df):
 # process 'Engine Type' attrs and rename column
 #
 def proc_engine(df):
-	df['Engine Type'] = df['Engine Type'].replace('\D','',regex = True)
-	df['Engine Type'] = pd.to_numeric(df['Engine Type'], errors='coerce')
-	df = df.dropna(subset = ['Engine Type'])
-	df['Engine Type'] = df['Engine Type'].astype(int)
-	df.rename(columns = {'Engine Type':'NUMCYLINDERS'}, inplace = True) 
+	df = df.replace('regularunleadedv6','gasv6')
+	df = df.replace('regularunleadedi4','gasi4')
+	df.rename(columns = {'Engine Type':'ENGINE'}, inplace = True) 
 	return df
 #
 # process inherent integer attrs and rename columns
@@ -78,21 +76,8 @@ def proc_hptorq(df):
 # process misc attrs and rename columns
 #
 def proc_misc(df):
-	attrs = ['NUMGEARS', 'MANUAL', 'AUTOMATIC']
-	df['NUMGEARS'] = df['Transmission'].replace('^[^\d]*','', regex = True)
-	df['NUMGEARS'] = df['Transmission'].replace('[^\d]+.*','', regex = True)
-
-	df['MANUAL'] = df['Transmission'].apply(lambda x: '1' if 'manual' in x else '0')
-	df['AUTOMATIC'] = df['Transmission'].apply(lambda x: '1' if 'automatic' in x else '0')
-
-	df = df.drop(columns = ['Transmission'])
-
-	for attr in attrs:
-		df[attr] = pd.to_numeric(df[attr])
-		df = df.dropna(subset=[attr])
-		df[attr] = df[attr].astype(int)
-
-	df.rename(columns = {'Body Style':'BODYSTYLE'}, inplace = True)
+	attrs = ['Body Style', 'Transmission']
+	df.rename(columns = {attrs[0]:'BODYSTYLE', attrs[1]:'TRANSMISSION'}, inplace = True)
 	return df
 #
 # process binary attrs and rename columns
@@ -144,18 +129,29 @@ def process_cars(df):
 #				etc ...
 #
 def binary_encode(df):
-	cat_attrs = ['DRIVETRAIN','BODYSTYLE','NUMCYLINDERS','NUMGEARS']
+	cat_attrs = ['DRIVETRAIN','BODYSTYLE','TRANSMISSION','ENGINE']
 	df = pd.get_dummies(df, columns=cat_attrs, prefix=cat_attrs)
+	return df
+#
+# creates a new label column for each attribute:
+#	-> ie: DRIVETRAIN becomes:
+#			-> DRIVETRAIN_CAT (0, 1, ... , n)
+#				where n is the number of unique values for a given attribute
+#
+def label_encode(df):
+	cat_attrs = ['DRIVETRAIN','BODYSTYLE','TRANSMISSION','ENGINE']
+	for attr in cat_attrs:
+		df[attr] = df[attr].astype('category')
+		df[attr+'_CAT'] = df[attr].cat.codes
 	return df
 #
 # remove infrequent values
 #
 def threshold(df, t):
-	cat_attrs = ['DRIVETRAIN','BODYSTYLE']
-	for attr in cat_attrs:
-		value_counts = df[attr].value_counts()
+	for col in df.columns:
+		value_counts = df[col].value_counts()
 		to_remove = value_counts[value_counts <= t].index.values
-		df[attr].loc[df[attr].isin(to_remove)] = np.nan
+		df[col].loc[df[col].isin(to_remove)] = np.nan
 		df = df.dropna()
 	return df
 #
@@ -191,13 +187,14 @@ def main():
 	cars = process_cars(cars)														#process cars!
 	print("DONE PROCESSING: "+fname)
 
-	#cars = threshold(cars, 2)														#threshold based on value
+	cars = threshold(cars, 2)														#threshold based on value
 	print("DONE THRESHOLD: "+str(2))
 
 	print("ENCODING: "+outname)
 	cars = binary_encode(cars)														#binary encoding scheme
 	#cars = label_encode(cars)														#label endcoding scheme
 	print("DONE ENCODING: "+outname)
+
 	cars.to_csv(cwd+outname)														#export processed dataset
 	print("DONE CREATING: "+outname)
 	info_print("output",cars)
