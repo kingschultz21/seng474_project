@@ -1,7 +1,6 @@
 #
 # Exports a processed version of the 'fullspecs.csv' dataset
 #
-
 import pandas as pd
 import os
 import numpy as np
@@ -35,7 +34,7 @@ def to_int(df):
 	attrs = ['MSRP','Passenger Capacity', 'Passenger Doors']
 	for attr in attrs:
 		df[attr] = df[attr].astype(int)
-	df.MSRP = df.MSRP.clip(upper=150000)
+	#df.MSRP = df.MSRP.clip(upper=150000)
 	df.rename(columns = {attrs[1]:'PASSCAPACITY', attrs[2]:'DOORS'}, inplace = True) 
 	return df
 #
@@ -145,7 +144,7 @@ def process_cars(df):
 #
 def binary_encode(df):
 	cat_attrs = ['DRIVETRAIN','BODYSTYLE','NUMCYLINDERS','NUMGEARS']
-	df = pd.get_dummies(df, columns=cat_attrs, prefix=cat_attrs)
+	df = pd.get_dummies(df, columns=cat_attrs, prefix=cat_attrs, drop_first = True)
 	return df
 #
 # remove infrequent values
