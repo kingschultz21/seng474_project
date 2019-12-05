@@ -167,7 +167,7 @@ def main():
 	cars = cars.dropna()															#remove na values
 	cars = cars.replace('[^A-Za-z0-9.]+','',regex=True)								#remove special characters 
 	cars = process_cars(cars)														#process cars!
-	cars = threshold(cars, 2)														#threshold based on value
+	#cars = threshold(cars, 3)														#threshold based on value
 	cars = binary_encode(cars)														#binary encoding scheme
 	cars.to_csv(cwd+outname)														#export processed dataset
 	print("DONE CREATING: "+outname)
